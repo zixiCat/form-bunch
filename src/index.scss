@@ -1,0 +1,59 @@
+.form-com {
+  display: flex;
+  flex-wrap: wrap;
+
+  .form-com-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .form-com-item-require {
+      color: red;
+    }
+
+    .form-com-item-label {
+      line-height: 30px;
+      padding: 0 4px;
+      cursor: default;
+    }
+
+    .form-com-item-control {
+      padding: 0 4px;
+    }
+
+    .form-com-error-box {}
+
+    .form-com-item-tips {
+      text-align: left;
+      height: 24px;
+      flex: 100%;
+      display: flex;
+      padding: 4px;
+      color: rgba(0, 0, 0, 0.65);
+
+      .form-com-item-error {
+        padding-left: 6px;
+        color: #e22e33;
+        font-size: 14px;
+      }
+    }
+
+    .form-com-item-noTips {
+      padding: 5px;
+      width: 100%;
+    }
+  }
+}
+
+/* form label align */
+.form-com-labelAlign-center {
+  text-align: center;
+}
+
+.form-com-labelAlign-right {
+  text-align: right;
+}
+
+.form-com-labelAlign-left {
+  text-align: left;
+}
