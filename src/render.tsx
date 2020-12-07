@@ -1,68 +1,102 @@
-import React, { memo, useContext } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import './index.scss';
-import { IFormItem, IFormRule, IFormValue } from './form-bunch';
-import { itemsContext, ruleContext, settingContext, valueContext, valueDispatchContext } from './index';
+import { IFormItem, IFormRule, IFormSetting, IFormValue } from './form-bunch';
 import { computedTypeMap } from './plugins';
-
-export const valueReducer = (state: IFormValue, action: any): IFormValue => {
-  try {
-    return action;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
+import { storeCtx } from './index';
 
 const Render = (props: {
   className?: string;
   style?: React.CSSProperties;
+  value?: IFormValue;
+  items: IFormItem[];
+  setting?: IFormSetting;
   onChange: (form: IFormValue, item: any, key: string) => void;
 }) => {
-  const value = useContext(valueContext);
-  const valueDispatch = useContext(valueDispatchContext);
-  const setting = useContext(settingContext);
-  const items = useContext(itemsContext);
-  const rule = useContext(ruleContext);
+  const value = useContext(storeCtx.getContext('value'));
+  const rule = useContext(storeCtx.getContext('rule'));
+  const setting = useMemo(() => props.setting, [props.setting]);
+  const items = useMemo(() => props.items, [props.items]);
+  const defaultValue = useMemo(() => {
+    const temp: IFormValue = {};
+    props.items.forEach((i) => {
+      if (i.defaultValue !== null && i.defaultValue !== undefined) {
+        temp[i.key] = i.defaultValue;
+      }
+    });
+    return temp;
+  }, [props.items]);
 
-  const layoutItem = (item: IFormItem, rule?: IFormRule) => ({
-    item: {
-      className: `form-com-item ${item.className || ''}`.trim(),
-      style: { flexBasis: item.col || setting?.col || '100%', marginLeft: item.offset || setting?.offset || 0 }
-    },
-    label: {
-      className: `form-com-item-label ${'form-com-labelAlign-' + (item.labelAlign || setting?.labelAlign || 'right')}`,
-      style: {
-        flexBasis: String(item.labelCol || setting?.labelCol || '20%')
-      }
-    },
-    control: {
-      className: `form-com-item-control ${rule && rule[item.key]?.result === false ? 'form-com-error-box' : ''}`.trim(),
-      style: {
-        flexBasis: String(
-          item.labelCol || setting.labelCol
-            ? item.controlCol || setting?.controlCol || `calc(100% - ${item.labelCol || setting.labelCol})`
-            : item.controlCol || setting?.controlCol || '80%'
-        )
-      }
-    },
-    tips1: {
-      style: {
-        flexBasis: String(item.labelCol || setting?.labelCol || '20%')
-      }
-    },
-    tips2: {
-      className: 'form-com-item-error',
-      style: {
-        flexBasis: String(
-          item.labelCol || setting.labelCol
-            ? item.controlCol || setting?.controlCol || `calc(100% - ${item.labelCol || setting.labelCol})`
-            : item.controlCol || setting?.controlCol || '80%'
-        )
-      }
-    }
-  });
+  useEffect(() => {
+    storeCtx.dispatch('setValue', defaultValue);
+    storeCtx.dispatch('setDefaultValue', defaultValue);
+  }, [defaultValue]);
+
+  const layoutItem = useCallback(
+    (item: IFormItem, rule?: IFormRule) => ({
+      item: {
+        className: `form-com-item ${item.className || ''}`.trim(),
+        style: {
+          flexBasis: item.col || setting?.col || '100%',
+          marginLeft: item.offset || setting?.offset || 0,
+        },
+      },
+      label: {
+        className: `form-com-item-label ${
+          'form-com-labelAlign-' +
+          (item.labelAlign || setting?.labelAlign || 'right')
+        }`,
+        style: {
+          flexBasis: String(item.labelCol || setting?.labelCol || '20%'),
+        },
+      },
+      control: {
+        className: `form-com-item-control ${
+          rule && rule[item.key]?.result === false ? 'form-com-error-box' : ''
+        }`.trim(),
+        style: {
+          flexBasis: String(
+            item.labelCol || setting?.labelCol
+              ? item.controlCol ||
+                  setting?.controlCol ||
+                  `calc(100% - ${item.labelCol || setting?.labelCol})`
+              : item.controlCol || setting?.controlCol || '80%'
+          ),
+        },
+      },
+      tips1: {
+        style: {
+          flexBasis: String(item.labelCol || setting?.labelCol || '20%'),
+        },
+      },
+      tips2: {
+        className: 'form-com-item-error',
+        style: {
+          flexBasis: String(
+            item.labelCol || setting?.labelCol
+              ? item.controlCol ||
+                  setting?.controlCol ||
+                  `calc(100% - ${item.labelCol || setting?.labelCol})`
+              : item.controlCol || setting?.controlCol || '80%'
+          ),
+        },
+      },
+    }),
+    [setting]
+  );
+
+  console.log('render render');
 
   return (
-    <div className={`form-com ${props.className || ''}`.trim()} style={props.style}>
+    <div
+      className={`form-com ${props.className || ''}`.trim()}
+      style={props.style}
+    >
       {items.map((item) => {
         // @ts-ignore
         const Comp = computedTypeMap[item.type || ''];
@@ -71,7 +105,9 @@ const Render = (props: {
           <div key={item.key} {...layoutItem(item).item}>
             {item.label && (
               <div {...layoutItem(item).label}>
-                {item.required && <span className="form-com-item-require">*</span>}
+                {item.required && (
+                  <span className="form-com-item-require">*</span>
+                )}
                 {item.label}
               </div>
             )}
@@ -83,10 +119,10 @@ const Render = (props: {
                   onChange={(e: any) => {
                     const newForm: IFormValue = {
                       ...value,
-                      [item.key]: e
+                      [item.key]: e,
                     };
                     props.onChange(newForm, newForm[item.key], item.key);
-                    valueDispatch(newForm);
+                    storeCtx.dispatch('setValue', newForm);
                   }}
                 />
               ) : (
@@ -95,18 +131,20 @@ const Render = (props: {
                   item.render(value[item.key], (state: any) => {
                     const newForm: IFormValue = {
                       ...value,
-                      [item.key]: state
+                      [item.key]: state,
                     };
                     props.onChange(newForm, newForm[item.key], item.key);
-                    valueDispatch(newForm);
+                    storeCtx.dispatch('setValue', newForm);
                   })) ||
                 ''
               )}
             </div>
-            {setting.hasTip || rule[item.key]?.error ? (
+            {setting?.hasTip || rule[item.key]?.error ? (
               <div className="form-com-item-tips">
                 {item.label && <div {...layoutItem(item).tips1} />}
-                <div {...layoutItem(item).tips2}>{rule[item.key]?.result === false && rule[item.key]?.error}</div>
+                <div {...layoutItem(item).tips2}>
+                  {rule[item.key]?.result === false && rule[item.key]?.error}
+                </div>
               </div>
             ) : (
               <div className="form-com-item-noTips" />

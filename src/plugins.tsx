@@ -1,6 +1,33 @@
 import React from 'react';
+import { DatePicker, Input, Switch, Radio } from 'antd';
 
-export const typeMap = {};
+export const typeMap = {
+  datePick: DatePicker,
+  input: [
+    Input,
+    {
+      onChange: ['onChange', 'e.target.value'],
+    },
+  ],
+  textArea: [
+    Input.TextArea,
+    {
+      onChange: ['onChange', 'e.target.value'],
+    },
+  ],
+  radio: [
+    Radio.Group,
+    {
+      onChange: ['onChange', 'e.target.value'],
+    },
+  ],
+  switch: [
+    Switch,
+    {
+      value: 'checked',
+    },
+  ],
+};
 
 const keyReplaceFn = (
   Comp: any,

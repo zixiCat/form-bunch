@@ -1,114 +1,56 @@
 import React, {
-  createContext,
   forwardRef,
   MutableRefObject,
   useEffect,
   useImperativeHandle,
   useMemo,
   useReducer,
-  useState
+  useRef,
+  useState,
 } from 'react';
-import { IFormBunchProps, IFormItem, IFormBunchRef, IFormRule, IFormSetting, IFormValue } from './form-bunch';
-import Render, { valueReducer } from './render';
-import Verify, { initRuleFn, ruleReducer, TVerifyFnMap, verifyFnMap } from './verify';
-import ComProvider from './com-provider';
+import {
+  IFormBunchProps,
+  IFormBunchRef,
+  IFormItem,
+  IFormValue,
+} from './form-bunch';
+import Render from './render';
+import Verify from './verify'; // verifyFnMap, // TVerifyFnMap, // ruleReducer, // initRuleFn,
+import { getConTexts, Provider } from 'easy-create-react-context';
+import Store, { IStore } from './store';
 
-export const itemsContext = createContext<IFormItem[]>([]);
-export const ruleContext = createContext<IFormRule>({});
-export const ruleDispatchContext = createContext<any>(null);
-export const settingContext = createContext<IFormSetting>({});
-export const valueContext = createContext<IFormValue>({});
-export const valueDispatchContext = createContext<any>({});
+export const storeCtx = getConTexts<IStore>();
 
-const FormBunch = (props: IFormBunchProps, ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null) => {
-  const defaultValue = useMemo(() => {
-    const temp: IFormValue = {};
-    props.items.forEach((i) => {
-      if (i.defaultValue !== null && i.defaultValue !== undefined) {
-        temp[i.key] = i.defaultValue;
-      }
-    });
-    return temp;
-  }, [props.items]);
-  const [value, valueDispatch] = useReducer(valueReducer, { ...defaultValue, ...props.value } || {});
-  const [initRule] = useState(() => initRuleFn(props.items));
-  const [initError] = useState(() => {
-    const temp: { [x: string]: string } = {};
-    for (const i of props.items) {
-      temp[i.key] = i.error || '';
-    }
-    return temp;
-  });
-  const [rule, ruleDispatch] = useReducer(ruleReducer, initRule);
+const FormBunch = (
+  props: IFormBunchProps,
+  ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
+) => {
+  const verifyRef = useRef<IFormBunchRef>({} as any);
 
   useImperativeHandle(
     ref,
     (): IFormBunchRef => ({
-      validate: () => {
-        let result = true;
-        ruleDispatch({
-          value: { ...defaultValue, ...props.value } || {},
-          initError: initError,
-          isValidateAll: true
-        });
-        for (const i in rule) {
-          if (rule.hasOwnProperty(i)) {
-            const target = (!!rule[i]?.required + '-' + !!rule[i]?.verify) as TVerifyFnMap;
-            const tempResult = verifyFnMap[target](rule[i], value[i], value);
-            if (tempResult !== true) {
-              result = false;
-              break;
-            }
-          }
-        }
-        return result;
-      },
-      reset: () => {
-        // props.onChange && props.onChange(defaultValue);
-        setTimeout(() => {
-          ruleDispatch({
-            value,
-            initError,
-            isValidateAll: false,
-            isReset: true
-          });
-        });
-      }
+      validate: () => verifyRef.current.validate(),
+      reset: () => verifyRef.current.reset(),
     })
   );
 
-  useEffect(() => {
-    valueDispatch({ ...defaultValue, ...props.value });
-    ruleDispatch({
-      value: { ...defaultValue, ...props.value } || {},
-      initError: initError,
-      isValidateAll: false
-    });
-  }, [props.value, defaultValue, initError]);
+  console.log('form-bunch render');
 
   return (
-    <ComProvider
-      components={[
-        valueContext.Provider,
-        valueDispatchContext.Provider,
-        itemsContext.Provider,
-        ruleContext.Provider,
-        ruleDispatchContext.Provider,
-        settingContext.Provider
-      ]}
-      value={[value, valueDispatch, props.items, rule, ruleDispatch, props.setting || {}]}
-    >
-      <>
-        <Render
-          className={props.className}
-          style={props.style}
-          onChange={(e, item, key) => {
-            props.onChange && props.onChange(e, item, key);
-          }}
-        />
-        <Verify />
-      </>
-    </ComProvider>
+    <Provider<IStore> contexts={storeCtx} value={new Store()}>
+      <Render
+        className={props.className}
+        style={props.style}
+        value={props.value}
+        setting={props.setting}
+        items={props.items}
+        onChange={(e, item, key) => {
+          props.onChange && props.onChange(e, item, key);
+        }}
+      />
+      <Verify ref={verifyRef} items={props.items} />
+    </Provider>
   );
 };
 

@@ -1,6 +1,23 @@
-import React, { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { IFormItem, IFormRule, IFormRuleItem, IFormValue } from './form-bunch';
-import { itemsContext, ruleDispatchContext, valueContext } from './index';
+import React, {
+  forwardRef,
+  memo,
+  MutableRefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  IFormBunchRef,
+  IFormItem,
+  IFormRule,
+  IFormRuleItem,
+  IFormValue,
+} from './form-bunch';
+import { storeCtx } from './index';
 
 /**
  * Function to get the initial rule
@@ -16,7 +33,7 @@ export const initRuleFn = (items: IFormItem[]) => {
       trigger: i.trigger,
       verify: i?.verify,
       result: 'unverified',
-      required: !!i?.required
+      required: !!i?.required,
     };
   });
   return temp || ({} as IFormRule);
@@ -51,113 +68,106 @@ export const verifyFnMap = {
         return false;
       }
     }
-  }
+  },
 };
 export type TVerifyFnMap = keyof typeof verifyFnMap;
-
-export const ruleReducer = (
-  state: IFormRule,
-  {
-    value,
-    initError,
-    isValidateAll,
-    isReset
-  }: {
-    value: IFormValue;
-    initError: { [x: string]: string };
-    isValidateAll: boolean;
-    isReset?: boolean;
-  }
-): IFormRule => {
-  try {
-    const newRule = { ...state };
-    if (isReset) {
-      for (let i in newRule) {
-        if (newRule.hasOwnProperty(i)) {
-          newRule[i].result = 'unverified';
-        }
-      }
-      return newRule;
-    }
-    const validate = (key: string) => {
-      const target = (!!state[key]?.required + '-' + !!state[key]?.verify) as TVerifyFnMap;
-      const tempResult = verifyFnMap[target](state[key], value[key], value);
-      newRule[key] = {
-        ...newRule[key],
-        value: value[key],
-        result: tempResult === true,
-        error: typeof tempResult === 'string' ? tempResult : initError[key]
-      };
-    };
-    if (!isValidateAll) {
-      for (const i in value) {
-        if (value.hasOwnProperty(i) && newRule[i]?.value !== value[i]) {
-          validate(i);
-        }
-      }
-    } else {
-      for (const i in state) {
-        if (state.hasOwnProperty(i)) {
-          validate(i);
-        }
-      }
-    }
-
-    return newRule;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
 
 /**
  * initRule
  * @return {IFormRule} The sum of the two numbers.
  */
-const Verify = () => {
-  // is there any way to simple this var [timeout]
+const Verify = (
+  props: { items: IFormItem[] },
+  ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
+) => {
+  // is there any way to simple this declare [timeout]
   let [timeout] = useState<any>(null);
-  const value = useContext(valueContext);
-  const ruleDispatch = useContext(ruleDispatchContext);
-  const items = useContext(itemsContext);
   const initError = useMemo(() => {
     const temp: { [x: string]: string } = {};
-    for (const i of items) {
+    for (const i of props.items) {
       temp[i.key] = i.error || '';
     }
     return temp;
-  }, [items]);
+  }, [props.items]);
+  const initRule = useMemo(() => initRuleFn(props.items), [props.items]);
+  useEffect(() => {
+    storeCtx.dispatch('setInitRule', initRule);
+  }, [initRule]);
+
+  const value = useContext(storeCtx.getContext('value'));
 
   const debounce = useCallback((fn: Function, interval = 200) => {
     return function () {
       clearTimeout(timeout);
-
       // eslint-disable-next-line react-hooks/exhaustive-deps
       timeout = setTimeout(() => {
         // @ts-ignore
-
+        // eslint-disable-next-line prefer-rest-params
         fn.apply(this, arguments);
       }, interval);
     };
   }, []);
+
+  useImperativeHandle(
+    ref,
+    (): IFormBunchRef => ({
+      validate: () => {
+        let result = true;
+        storeCtx.dispatch('verify', {
+          value: value || {},
+          initError: initError,
+          isValidateAll: true,
+        });
+        const rule: any = storeCtx.dispatch('getRule');
+        for (const i in rule) {
+          if (rule.hasOwnProperty(i)) {
+            const target = (!!rule[i]?.required +
+              '-' +
+              !!rule[i]?.verify) as TVerifyFnMap;
+            const tempResult = verifyFnMap[target](rule[i], value[i], value);
+            if (tempResult !== true) {
+              result = false;
+              break;
+            }
+          }
+        }
+        console.log(result);
+        return result;
+      },
+      reset: () => {
+        // props.onChange && props.onChange(defaultValue);
+        storeCtx.dispatch('verify', {
+          value,
+          initError,
+          isValidateAll: false,
+          isReset: true,
+        });
+        // const temp = storeCtx.dispatch({ type: 'getDefaultValue' }) as any;
+        // console.log(temp);
+        // storeCtx.dispatch('setValue', temp);
+      },
+    })
+  );
 
   const mounted = useRef<boolean>();
   useEffect(() => {
     if (mounted.current) {
       // do componentDidUpdate logic
       debounce(() => {
-        ruleDispatch({
+        console.log('verify render');
+        storeCtx.dispatch('verify', {
           value,
           initError,
-          isValidateAll: false
+          isValidateAll: false,
         });
       })();
     } else {
       // do componentDidMount logic
       mounted.current = true;
     }
-  }, [debounce, value, initError, ruleDispatch]);
+  }, [debounce, value, initError]);
 
   return <></>;
 };
 
-export default memo(Verify);
+export default memo(forwardRef(Verify));
