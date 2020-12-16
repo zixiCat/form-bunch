@@ -16,7 +16,6 @@ export interface IFormItemT {
   /** formItem property */
   key: string;
   /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
-  type?: TTypeMapKey;
   /** like flex-basic, it's the label's property of the formItem, default is 20% */
   labelCol?: string;
   /** like flex-basic, it's the control's property of the formItem, default is 80% */
@@ -32,7 +31,7 @@ export interface IFormItemT {
   /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
   render?: (value: any, setValue: (state: any) => void) => void;
   /** when use [type], then [typeProps] is its original props */
-  typeProps?: React.ComponentProps<TOriginTypeMap[keyof TOriginTypeMap]>;
+  // typeProps?: React.ComponentProps<TOriginTypeMap[keyof TOriginTypeMap]>;
 }
 
 export interface IFormSetting {
@@ -86,36 +85,36 @@ export interface IFormRule {
 
 type TTrigger = 'blur' | 'change';
 
-type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
-  T,
-  Exclude<keyof T, Keys>
-> &
+type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
   {
-    [K in Keys]-?: Required<Pick<T, K>> &
-      Partial<Record<Exclude<Keys, K>, undefined>>;
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
   }[Keys];
 
-export type IFormItem = RequireOnlyOne<IFormItemT, 'type' | 'render'>;
+export type IFormItem = T2;
 
 export interface IFormValue {
   [x: string]: any;
 }
 
-type TTypeMapKey = keyof typeof typeMap;
-
 type TTypeMap = typeof typeMap;
 
 type TOriginTypeMap = {
   [p in keyof TTypeMap]: TTypeMap[p] extends any[]
-    ? TTypeMap[p][0]
-    : TTypeMap[p];
+    ? UnionToIntersection<React.ComponentProps<TTypeMap[p][0]>>
+    : // @ts-ignore
+      UnionToIntersection<React.ComponentProps<TTypeMap[p]>>;
 };
 
-export type IContextValue = [
-  IFormValue,
-  React.Dispatch<TAction<IFormValue>>,
-  IFormItem[],
-  IFormRule,
-  React.Dispatch<any>,
-  IFormSetting
-];
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type T1 = {
+  [P in keyof TOriginTypeMap]: RequireOnlyOne<
+    {
+      type?: P;
+      typeProps?: TOriginTypeMap[P];
+    } & IFormItemT,
+    'type' | 'render'
+  >;
+};
+
+type T2 = T1[keyof T1];
