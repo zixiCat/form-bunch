@@ -16,7 +16,7 @@ import {
   IFormRule,
   IFormRuleItem,
   IFormValue,
-} from './form-bunch';
+} from '../form-bunch';
 import { storeCtx } from './index';
 
 /**

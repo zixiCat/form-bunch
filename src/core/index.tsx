@@ -1,28 +1,19 @@
 import React, {
   forwardRef,
   MutableRefObject,
-  useEffect,
   useImperativeHandle,
-  useMemo,
-  useReducer,
   useRef,
-  useState,
 } from 'react';
-import {
-  IFormBunchProps,
-  IFormBunchRef,
-  IFormItem,
-  IFormValue,
-} from './form-bunch';
+import { IFormBunchProps, IFormBunchRef } from '../form-bunch';
 import Render from './render';
-import Verify from './verify'; // verifyFnMap, // TVerifyFnMap, // ruleReducer, // initRuleFn,
+import Verify from './verify';
 import { getConTexts, Provider } from 'easy-create-react-context';
 import Store, { IStore } from './store';
 
 export const storeCtx = getConTexts<IStore>();
 
-const FormBunch = (
-  props: IFormBunchProps,
+const FormBunchCore = (
+  props: IFormBunchProps<unknown>,
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
 ) => {
   const verifyRef = useRef<IFormBunchRef>({} as any);
@@ -54,4 +45,4 @@ const FormBunch = (
   );
 };
 
-export default forwardRef(FormBunch);
+export default forwardRef(FormBunchCore);

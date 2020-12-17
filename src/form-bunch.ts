@@ -1,5 +1,4 @@
 import React from 'react';
-import { typeMap } from './plugins';
 
 export interface IFormItemT {
   /** type of label alignment, default is right */
@@ -54,9 +53,9 @@ export interface IFormBunchRef {
   reset: () => void;
 }
 
-export interface IFormBunchProps {
+export interface IFormBunchProps<T> {
   /** config of each form item */
-  items: IFormItem[];
+  items: IFormItem<T>[];
   rule?: IFormRule;
   /** default global setting of form */
   setting?: IFormSetting;
@@ -85,36 +84,40 @@ export interface IFormRule {
 
 type TTrigger = 'blur' | 'change';
 
-type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
   {
-    [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
+    [K in Keys]-?: Required<Pick<T, K>> &
+      Partial<Record<Exclude<Keys, K>, undefined>>;
   }[Keys];
-
-export type IFormItem = T2;
 
 export interface IFormValue {
   [x: string]: any;
 }
 
-type TTypeMap = typeof typeMap;
-
-type TOriginTypeMap = {
-  [p in keyof TTypeMap]: TTypeMap[p] extends any[]
-    ? UnionToIntersection<React.ComponentProps<TTypeMap[p][0]>>
+type TOriginTypeMap<T> = {
+  [p in keyof T]: T[p] extends any[]
+    ? UnionToIntersection<React.ComponentProps<T[p][0]>>
     : // @ts-ignore
-      UnionToIntersection<React.ComponentProps<TTypeMap[p]>>;
+      UnionToIntersection<React.ComponentProps<T[p]>>;
 };
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
+  ? I
+  : never;
 
-type T1 = {
-  [P in keyof TOriginTypeMap]: RequireOnlyOne<
+type T1<T> = {
+  [P in keyof TOriginTypeMap<T>]: RequireOnlyOne<
     {
       type?: P;
-      typeProps?: TOriginTypeMap[P];
+      typeProps?: TOriginTypeMap<T>[P];
     } & IFormItemT,
     'type' | 'render'
   >;
 };
 
-type T2 = T1[keyof T1];
+export type IFormItem<T> = T1<T>[keyof T1<T>];

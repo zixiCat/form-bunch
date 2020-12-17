@@ -1,4 +1,4 @@
-import { IFormItem, IFormRule, IFormValue } from './form-bunch';
+import { IFormItem, IFormRule, IFormValue } from '../form-bunch';
 import { TVerifyFnMap, verifyFnMap } from './verify';
 
 class Store {

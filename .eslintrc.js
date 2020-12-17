@@ -38,6 +38,7 @@ module.exports = {
       'error',
       { semi: true, endOfLine: 'auto', singleQuote: true },
     ],
+    'react/display-name': 0,
   },
   ignorePatterns: ['dist', 'build', 'lib'],
 };

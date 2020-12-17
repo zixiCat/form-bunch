@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import './index.scss';
-import { IFormItem, IFormRule, IFormSetting, IFormValue } from './form-bunch';
+import { IFormItem, IFormRule, IFormSetting, IFormValue } from '../form-bunch';
 import { computedTypeMap } from './plugins';
 import { storeCtx } from './index';
 
