@@ -41,7 +41,7 @@ export interface IFormSetting {
   /** like flex-basic, it's the control's property of the formItem, default is 80% */
   controlCol?: string;
   offset?: string;
-  hasTip?: boolean;
+  hasTips?: boolean;
   /** type of label alignment, default is right */
   labelAlign?: 'left' | 'right' | 'center';
 }
