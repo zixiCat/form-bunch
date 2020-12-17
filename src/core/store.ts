@@ -1,71 +1,67 @@
-import { IFormItem, IFormRule, IFormValue } from '../form-bunch';
-import { TVerifyFnMap, verifyFnMap } from './verify';
+import { IFormRule, IFormValue } from '../form-bunch';
+import { validate } from './verify';
 
 class Store {
   value: IFormValue = {};
-  items: IFormItem[] = [];
+  initRule: IFormRule = {};
   rule: IFormRule = {};
+  defaultValue: IFormValue = {};
   setValue(value: IFormValue) {
     this.value = value;
   }
-  verify(params: {
-    value: IFormValue;
-    initError: { [x: string]: string };
-    isValidateAll: boolean;
-    isReset?: boolean;
-  }) {
-    const state = this.rule;
-    const { value, initError, isValidateAll, isReset } = params;
-    const newRule = { ...state };
-    if (isReset) {
-      for (let i in newRule) {
-        if (newRule.hasOwnProperty(i)) {
-          newRule[i].result = 'unverified';
-        }
-      }
-      return newRule;
-    }
-    const validate = (key: string) => {
-      const target = (!!state[key]?.required +
-        '-' +
-        !!state[key]?.verify) as TVerifyFnMap;
-      const tempResult = verifyFnMap[target](state[key], value[key], value);
-      newRule[key] = {
-        ...newRule[key],
-        value: value[key],
-        result: tempResult === true,
-        error: typeof tempResult === 'string' ? tempResult : initError[key],
-      };
-    };
-    if (!isValidateAll) {
-      for (const i in value) {
-        if (value.hasOwnProperty(i) && newRule[i]?.value !== value[i]) {
-          validate(i);
-        }
-      }
-    } else {
-      for (const i in state) {
-        if (state.hasOwnProperty(i)) {
-          validate(i);
-        }
+  verify(params: { value: IFormValue; initError: { [x: string]: string } }) {
+    const { value, initError } = params;
+    const newRule: IFormRule = {};
+
+    for (const i in value) {
+      if (value.hasOwnProperty(i) && newRule[i]?.value !== value[i]) {
+        newRule[i] = validate({
+          key: i,
+          value,
+          rule: this.rule,
+          initError: initError,
+        });
       }
     }
     this.rule = newRule;
   }
+  verifyAll(params: { value: IFormValue; initError: { [x: string]: string } }) {
+    const { value, initError } = params;
+    const newRule: IFormRule = {};
+
+    let result = true;
+    for (const i in this.rule) {
+      if (this.rule.hasOwnProperty(i)) {
+        newRule[i] = validate({
+          key: i,
+          value,
+          rule: this.rule,
+          initError: initError,
+        });
+        if (result) result = Boolean(newRule[i].result);
+      }
+    }
+    this.rule = newRule;
+    return result;
+  }
   setInitRule(initRule: IFormRule) {
+    this.rule = initRule;
     this.initRule = initRule;
   }
-  initRule: IFormRule = {};
   setDefaultValue(defaultValue: IFormValue) {
     this.defaultValue = defaultValue;
     this.value = { ...this.value, ...defaultValue };
   }
-  defaultValue: IFormValue = {};
-  getRule() {
-    return this.rule;
-  }
-  getDefaultValue() {
-    return this.defaultValue;
+  reset() {
+    const newRule = { ...this.rule };
+    for (const i in newRule) {
+      if (newRule.hasOwnProperty(i)) {
+        newRule[i].result = 'unverified';
+        newRule[i].value = this.defaultValue[i] || '';
+      }
+    }
+    this.rule = newRule;
+    this.value = this.defaultValue;
   }
 }
 

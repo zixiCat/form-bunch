@@ -7,13 +7,15 @@ import React, {
 import { IFormBunchProps, IFormBunchRef } from '../form-bunch';
 import Render from './render';
 import Verify from './verify';
-import { getConTexts, Provider } from 'easy-create-react-context';
+// See https://github.com/zixiCat/easy-create-react-context for more details about `easy-create-react-context`
+// If you like it, star it :)
+import { getConTexts, Provider } from 'easy-create-react-context/index';
 import Store, { IStore } from './store';
 
 export const storeCtx = getConTexts<IStore>();
 
 const FormBunchCore = (
-  props: IFormBunchProps<unknown>,
+  props: IFormBunchProps<any>,
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
 ) => {
   const verifyRef = useRef<IFormBunchRef>({} as any);
@@ -25,8 +27,6 @@ const FormBunchCore = (
       reset: () => verifyRef.current.reset(),
     })
   );
-
-  console.log('form-bunch render');
 
   return (
     <Provider<IStore> contexts={storeCtx} value={new Store()}>

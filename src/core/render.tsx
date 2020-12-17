@@ -7,14 +7,14 @@ import React, {
 } from 'react';
 import './index.scss';
 import { IFormItem, IFormRule, IFormSetting, IFormValue } from '../form-bunch';
-import { computedTypeMap } from './plugins';
 import { storeCtx } from './index';
+import { computedExtensions } from '..';
 
 const Render = (props: {
   className?: string;
   style?: React.CSSProperties;
   value?: IFormValue;
-  items: IFormItem[];
+  items: IFormItem<any>[];
   setting?: IFormSetting;
   onChange: (form: IFormValue, item: any, key: string) => void;
 }) => {
@@ -38,7 +38,7 @@ const Render = (props: {
   }, [defaultValue]);
 
   const layoutItem = useCallback(
-    (item: IFormItem, rule?: IFormRule) => ({
+    (item: IFormItem<any>, rule?: IFormRule) => ({
       item: {
         className: `form-com-item ${item.className || ''}`.trim(),
         style: {
@@ -90,8 +90,6 @@ const Render = (props: {
     [setting]
   );
 
-  console.log('render render');
-
   return (
     <div
       className={`form-com ${props.className || ''}`.trim()}
@@ -99,7 +97,7 @@ const Render = (props: {
     >
       {items.map((item) => {
         // @ts-ignore
-        const Comp = computedTypeMap[item.type || ''];
+        const Comp = computedExtensions[item.type || ''];
 
         return (
           <div key={item.key} {...layoutItem(item).item}>
@@ -139,7 +137,7 @@ const Render = (props: {
                 ''
               )}
             </div>
-            {setting?.hasTip || rule[item.key]?.error ? (
+            {setting?.hasTips || rule[item.key]?.error ? (
               <div className="form-com-item-tips">
                 {item.label && <div {...layoutItem(item).tips1} />}
                 <div {...layoutItem(item).tips2}>

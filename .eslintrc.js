@@ -39,6 +39,7 @@ module.exports = {
       { semi: true, endOfLine: 'auto', singleQuote: true },
     ],
     'react/display-name': 0,
+    'require-jsdoc': 0,
   },
   ignorePatterns: ['dist', 'build', 'lib'],
 };
