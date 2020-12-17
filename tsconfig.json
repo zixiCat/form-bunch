@@ -4,7 +4,6 @@
     "outDir": "lib",
     "module": "esnext",
     "target": "es5",
-    "skipLibCheck": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "sourceMap": true,
     "allowJs": true,

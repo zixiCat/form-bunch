@@ -7,8 +7,8 @@
  * rollup-plugin-sass
  * rollup-plugin-typescript2
  * */
-import sass from 'rollup-plugin-sass'
-import typescript from 'rollup-plugin-typescript2'
+import sass from 'rollup-plugin-sass';
+import typescript from 'rollup-plugin-typescript2';
 
 export default {
   input: 'src/index',
@@ -18,9 +18,9 @@ export default {
       format: 'cjs',
       exports: 'named',
       sourcemap: true,
-      strict: false
-    }
+      strict: false,
+    },
   ],
-  plugins: [sass({insert: true}), typescript()],
-  external: ['react', 'react-dom']
-}
+  plugins: [sass({ insert: true }), typescript()],
+  external: ['react', 'react-dom'],
+};
