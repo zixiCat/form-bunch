@@ -32,7 +32,7 @@ export const initRuleFn = (
   const temp: IFormRule = {};
   items.forEach((i) => {
     temp[i.key] = {
-      value: defaultValue[i.key] || '',
+      value: defaultValue[i.key] || null,
       error: i.error || '',
       trigger: i.trigger,
       verify: i?.verify,
