@@ -11,11 +11,9 @@ class Store {
   }
   verify(params: { value: IFormValue; initError: { [x: string]: string } }) {
     const { value, initError } = params;
-    const newRule: IFormRule = {};
-
     for (const i in value) {
-      if (value.hasOwnProperty(i) && newRule[i]?.value !== value[i]) {
-        newRule[i] = validate({
+      if (value.hasOwnProperty(i) && this.rule[i]?.value !== value[i]) {
+        this.rule[i] = validate({
           key: i,
           value,
           rule: this.rule,
@@ -23,12 +21,11 @@ class Store {
         });
       }
     }
-    this.rule = newRule;
+    this.rule = { ...this.rule };
   }
   verifyAll(params: { value: IFormValue; initError: { [x: string]: string } }) {
     const { value, initError } = params;
     const newRule: IFormRule = {};
-
     let result = true;
     for (const i in this.rule) {
       if (this.rule.hasOwnProperty(i)) {
@@ -45,12 +42,22 @@ class Store {
     return result;
   }
   setInitRule(initRule: IFormRule) {
-    this.rule = initRule;
+    const newRule: IFormRule = {};
+    for (const i in initRule) {
+      if (initRule.hasOwnProperty(i)) {
+        newRule[i] = {
+          ...initRule[i],
+          result: this.rule[i]?.result ?? initRule[i].result,
+          value: this.rule[i]?.value ?? initRule[i].value,
+        };
+      }
+    }
+    this.rule = newRule;
     this.initRule = initRule;
   }
   setDefaultValue(defaultValue: IFormValue) {
     this.defaultValue = defaultValue;
-    this.value = { ...this.value, ...defaultValue };
+    this.value = defaultValue;
   }
   reset() {
     const newRule = { ...this.rule };

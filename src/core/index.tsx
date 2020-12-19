@@ -9,7 +9,7 @@ import Render from './render';
 import Verify from './verify';
 // See https://github.com/zixiCat/easy-create-react-context for more details about `easy-create-react-context`
 // If you like it, star it :)
-import { getConTexts, Provider } from 'easy-create-react-context/index';
+import { getConTexts, Provider } from 'easy-create-react-context';
 import Store, { IStore } from './store';
 
 export const storeCtx = getConTexts<IStore>();
@@ -18,7 +18,7 @@ const FormBunchCore = (
   props: IFormBunchProps<any>,
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
 ) => {
-  const verifyRef = useRef<IFormBunchRef>({} as any);
+  const verifyRef = useRef<IFormBunchRef>();
 
   useImperativeHandle(
     ref,

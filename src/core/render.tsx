@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
 } from 'react';
 import './index.scss';
 import { IFormItem, IFormRule, IFormSetting, IFormValue } from '../form-bunch';
@@ -20,6 +21,7 @@ const Render = (props: {
 }) => {
   const value = useContext(storeCtx.getContext('value'));
   const rule = useContext(storeCtx.getContext('rule'));
+  const mounted = useRef<boolean>();
   const setting = useMemo(() => props.setting, [props.setting]);
   const items = useMemo(() => props.items, [props.items]);
   const defaultValue = useMemo(() => {
@@ -33,22 +35,25 @@ const Render = (props: {
   }, [props.items]);
 
   useEffect(() => {
-    storeCtx.dispatch('setValue', defaultValue);
-    storeCtx.dispatch('setDefaultValue', defaultValue);
-  }, [defaultValue]);
+    if (!mounted.current) {
+      // do componentDidMount logic
+      storeCtx.dispatch('setDefaultValue', { ...props.value, ...defaultValue });
+      mounted.current = true;
+    }
+  }, [props.value, defaultValue]);
 
   const layoutItem = useCallback(
     (item: IFormItem<any>, rule?: IFormRule) => ({
       item: {
-        className: `form-com-item ${item.className || ''}`.trim(),
+        className: `form-bunch-item ${item.className || ''}`.trim(),
         style: {
           flexBasis: item.col || setting?.col || '100%',
           marginLeft: item.offset || setting?.offset || 0,
         },
       },
       label: {
-        className: `form-com-item-label ${
-          'form-com-labelAlign-' +
+        className: `form-bunch-item-label ${
+          'form-bunch-labelAlign-' +
           (item.labelAlign || setting?.labelAlign || 'right')
         }`,
         style: {
@@ -56,8 +61,8 @@ const Render = (props: {
         },
       },
       control: {
-        className: `form-com-item-control ${
-          rule && rule[item.key]?.result === false ? 'form-com-error-box' : ''
+        className: `form-bunch-item-control ${
+          rule && rule[item.key]?.result === false ? 'form-bunch-error-box' : ''
         }`.trim(),
         style: {
           flexBasis: String(
@@ -75,7 +80,7 @@ const Render = (props: {
         },
       },
       tips2: {
-        className: 'form-com-item-error',
+        className: 'form-bunch-item-error',
         style: {
           flexBasis: String(
             item.labelCol || setting?.labelCol
@@ -92,19 +97,18 @@ const Render = (props: {
 
   return (
     <div
-      className={`form-com ${props.className || ''}`.trim()}
+      className={`form-bunch ${props.className || ''}`.trim()}
       style={props.style}
     >
       {items.map((item) => {
         // @ts-ignore
         const Comp = computedExtensions[item.type || ''];
-
         return (
           <div key={item.key} {...layoutItem(item).item}>
             {item.label && (
               <div {...layoutItem(item).label}>
                 {item.required && (
-                  <span className="form-com-item-require">*</span>
+                  <span className="form-bunch-item-require">*</span>
                 )}
                 {item.label}
               </div>
@@ -138,14 +142,14 @@ const Render = (props: {
               )}
             </div>
             {setting?.hasTips || rule[item.key]?.error ? (
-              <div className="form-com-item-tips">
+              <div className="form-bunch-item-tips">
                 {item.label && <div {...layoutItem(item).tips1} />}
                 <div {...layoutItem(item).tips2}>
                   {rule[item.key]?.result === false && rule[item.key]?.error}
                 </div>
               </div>
             ) : (
-              <div className="form-com-item-noTips" />
+              <div className="form-bunch-item-noTips" />
             )}
           </div>
         );

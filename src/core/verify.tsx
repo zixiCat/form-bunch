@@ -22,13 +22,17 @@ import { storeCtx } from './index';
 /**
  * Function to get the initial rule
  * @param {IFormItem[]} items The second number.
+ * @param {IFormValue} defaultValue.
  * @return {IFormRule} The sum of the two numbers.
  */
-export const initRuleFn = (items: IFormItem<any>[]) => {
+export const initRuleFn = (
+  items: IFormItem<any>[],
+  defaultValue: IFormValue
+) => {
   const temp: IFormRule = {};
   items.forEach((i) => {
     temp[i.key] = {
-      value: i.defaultValue || '',
+      value: defaultValue[i.key] || '',
       error: i.error || '',
       trigger: i.trigger,
       verify: i?.verify,
@@ -47,7 +51,7 @@ export const verifyFnMap = {
     if (rule?.verify instanceof RegExp) {
       return (rule?.verify as RegExp).test(valueItem) || false;
     } else {
-      return (rule?.verify as Function)(valueItem, value) || false;
+      return (rule?.verify as Function)(valueItem ?? '', value) || false;
     }
   },
   'true-false': (_rule: IFormRuleItem, valueItem: any) => {
@@ -58,7 +62,7 @@ export const verifyFnMap = {
       if (rule?.verify instanceof RegExp) {
         return (rule?.verify as RegExp).test(valueItem) || false;
       } else {
-        return (rule?.verify as Function)(valueItem, value) || false;
+        return (rule?.verify as Function)(valueItem ?? '', value) || false;
       }
     } else {
       if (typeof rule?.verify === 'function') {
@@ -91,6 +95,7 @@ export const validate = ({ key, value, rule, initError }: TValidateParams) => {
     '-' +
     !!rule[key]?.verify) as TVerifyFnMap;
   const tempResult = verifyFnMap[target](rule[key], value[key], value);
+
   return {
     ...rule[key],
     value: value[key],
@@ -106,6 +111,10 @@ const Verify = (
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
 ) => {
   let [timeout] = useState<any>(null);
+  const mounted = useRef<boolean>();
+  const value = useContext(storeCtx.getContext('value'));
+  const defaultValue = useContext(storeCtx.getContext('defaultValue'));
+
   const initError = useMemo(() => {
     const temp: { [x: string]: string } = {};
     for (const i of props.items) {
@@ -113,12 +122,15 @@ const Verify = (
     }
     return temp;
   }, [props.items]);
-  const initRule = useMemo(() => initRuleFn(props.items), [props.items]);
+
+  const initRule = useMemo(() => initRuleFn(props.items, defaultValue), [
+    defaultValue,
+    props.items,
+  ]);
+
   useEffect(() => {
     storeCtx.dispatch('setInitRule', initRule);
   }, [initRule]);
-
-  const value = useContext(storeCtx.getContext('value'));
 
   const debounce = useCallback((fn: Function, interval = 200) => {
     return function () {
@@ -148,7 +160,6 @@ const Verify = (
     })
   );
 
-  const mounted = useRef<boolean>();
   useEffect(() => {
     if (mounted.current) {
       // do componentDidUpdate logic

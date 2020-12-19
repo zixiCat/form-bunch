@@ -36,7 +36,7 @@ const getComputedExtensions = <T extends unknown>(typeMap: T) => {
   const result: any = {};
   let item: keyof T;
   for (item in typeMap) {
-    if ((typeMap as Object).hasOwnProperty(item)) {
+    if (typeMap.hasOwnProperty(item)) {
       if (typeMap[item] instanceof Array) {
         // @ts-ignore
         result[item] = keyReplaceFn(typeMap[item][0], typeMap[item][1]);

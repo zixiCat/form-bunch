@@ -66,6 +66,7 @@ export interface IFormBunchProps<T> {
   /** form data */
   value?: IFormValue;
   className?: string;
+  ref?: any;
   style?: React.CSSProperties;
 }
 
