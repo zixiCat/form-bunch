@@ -13,7 +13,7 @@ export const formBunchInit = <T extends unknown>(
 ): ((
   props: IFormBunchProps<T>,
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
-) => any) => {
+) => JSX.Element) => {
   computedExtensions = getComputedExtensions<T>(extensions);
-  return FormBunchCore as any;
+  return FormBunchCore;
 };

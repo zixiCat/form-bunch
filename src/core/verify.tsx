@@ -1,6 +1,5 @@
 import React, {
   forwardRef,
-  memo,
   useCallback,
   useContext,
   useEffect,
@@ -9,6 +8,7 @@ import React, {
   useRef,
   useState,
   MutableRefObject,
+  memo,
 } from 'react';
 import {
   IFormBunchRef,
@@ -22,11 +22,11 @@ import { storeCtx } from './index';
 /**
  * Function to get the initial rule
  * @param {IFormItem[]} items The second number.
- * @param {IFormValue} defaultValue.
+ * @param {IFormValue} defaultValue
  * @return {IFormRule} The sum of the two numbers.
  */
-export const initRuleFn = (
-  items: IFormItem<any>[],
+export const initRuleFn = <T extends unknown>(
+  items: IFormItem<T>[],
   defaultValue: IFormValue
 ) => {
   const temp: IFormRule = {};
@@ -106,8 +106,10 @@ export const validate = ({ key, value, rule, initError }: TValidateParams) => {
 
 export type TVerifyFnMap = keyof typeof verifyFnMap;
 
-const Verify = (
-  props: { items: IFormItem<any>[] },
+const Verify = <T extends unknown>(
+  props: {
+    items: IFormItem<T>[];
+  },
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
 ) => {
   let [timeout] = useState<any>(null);
@@ -178,4 +180,7 @@ const Verify = (
   return <></>;
 };
 
-export default memo(forwardRef(Verify));
+export default memo(forwardRef(Verify)) as <T extends unknown>(props: {
+  items: IFormItem<T>[];
+  ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null;
+}) => JSX.Element;

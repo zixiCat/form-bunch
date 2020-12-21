@@ -14,8 +14,8 @@ import Store, { IStore } from './store';
 
 export const storeCtx = getConTexts<IStore>();
 
-const FormBunchCore = (
-  props: IFormBunchProps<any>,
+const FormBunchCore = <T extends unknown>(
+  props: IFormBunchProps<T>,
   ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
 ) => {
   const verifyRef = useRef<IFormBunchRef>();
@@ -30,7 +30,7 @@ const FormBunchCore = (
 
   return (
     <Provider<IStore> contexts={storeCtx} value={new Store()}>
-      <Render
+      <Render<T>
         className={props.className}
         style={props.style}
         value={props.value}
@@ -40,7 +40,7 @@ const FormBunchCore = (
           props.onChange && props.onChange(e, item, key);
         }}
       />
-      <Verify ref={verifyRef} items={props.items} />
+      <Verify<T> ref={verifyRef} items={props.items} />
     </Provider>
   );
 };

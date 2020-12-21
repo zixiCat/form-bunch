@@ -1,67 +1,78 @@
 import React from 'react';
 
 export interface IFormItemT {
-  /** type of label alignment, default is right */
+  /** type of label alignment, default: right */
   labelAlign?: 'left' | 'right' | 'center';
   /** class of the formItem */
   className?: string;
   /** default value, you can also change `initial value of form API` to set the default value */
   defaultValue?: any;
-  /** like flex-basic, it's the property of the formItem, default is 100% */
+  /** like flex-basic, it's the property of the formItem, default: 100% */
   col?: string;
+  /** the length to offset space from the left, default: 0 */
   offset?: string;
   /** formItem label name */
   label?: string;
   /** formItem property */
   key: string;
-  /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
-  /** like flex-basic, it's the label's property of the formItem, default is 20% */
+  /** like flex-basic, it's the label's property of the formItem, default: 20% */
   labelCol?: string;
-  /** like flex-basic, it's the control's property of the formItem, default is 80% */
+  /** like flex-basic, it's the control's property of the formItem, default: 80% */
   controlCol?: string;
-  /** the message after fail to verify */
+  /** the message after failed to verify */
   error?: string;
-  /** the way that trigger to verify */
+  /** the way that trigger to verify, default: 'change' */
   trigger?: TTrigger;
-  /** set formItem value to required */
+  /** set formItem value to be required, default: false */
   required?: boolean;
-  /** function that verify the formItem value, support regex, when the return function is string, the error is  */
+  /** function that to verify the formItem value, it supports regex, when its return is string, the string will replace corresponding error tip */
   verify?: RegExp | ((value?: any, form?: IFormValue) => boolean | string);
   /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
-  render?: (value: any, setValue: (state: any) => void) => void;
-  /** when use [type], then [typeProps] is its original props */
-  // typeProps?: React.ComponentProps<TOriginTypeMap[keyof TOriginTypeMap]>;
+  render?: (value: any, setValue: (state: any) => void) => JSX.Element;
 }
 
+type TFormItems<T> = {
+  [P in keyof TOriginTypeMap<T>]: RequireOnlyOne<
+    {
+      /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
+      type?: P;
+      /** when use [type], then [typeProps] is its original props */
+      typeProps?: TOriginTypeMap<T>[P];
+    } & IFormItemT,
+    'type' | 'render'
+  >;
+};
+
 export interface IFormSetting {
-  /** like flex-basic, it's the property of the formItem, default is 100% */
+  /** like flex-basic, it's the property of the formItem, default: 100% */
   col?: string;
-  /** like flex-basic, it's the label's property of the formItem, default is 20% */
+  /** like flex-basic, it's the label's property of the formItem, default: 20% */
   labelCol?: string;
-  /** like flex-basic, it's the control's property of the formItem, default is 80% */
+  /** like flex-basic, it's the control's property of the formItem, default: 80% */
   controlCol?: string;
+  /** the length to offset space from the left, default: 0 */
   offset?: string;
+  /** determine if there is space left for error tips */
   hasTips?: boolean;
   /** type of label alignment, default is right */
   labelAlign?: 'left' | 'right' | 'center';
 }
 
 export interface IFormBunchRef {
-  /** validate all values of form and return the result */
+  /** validate all values of form and return result */
   validate: () => boolean;
-  /** reset all value of form */
+  /** reset all value of form and result of verify */
   reset: () => void;
 }
 
 export interface IFormBunchProps<T> {
   /** config of each form item */
   items: IFormItem<T>[];
-  rule?: IFormRule;
-  /** default global setting of form */
+  /** global setting of form, Priority: items > setting */
   setting?: IFormSetting;
-  /** callback after form data changes */
+  /** the callback function when form data changes */
   onChange?: (form: IFormValue, item: any, key: string) => void;
-  /** The callback function that is triggered when some keys of KB is pressed */
+  /** the callback function that is triggered when some keys of keyboard is pressed */
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   /** form data */
   value?: IFormValue;
@@ -102,7 +113,7 @@ type TOriginTypeMap<T> = {
   [p in keyof T]: T[p] extends any[]
     ? UnionToIntersection<React.ComponentProps<T[p][0]>>
     : // @ts-ignore
-      UnionToIntersection<React.ComponentProps<T[p]>>;
+      React.ComponentProps<T[p]>;
 };
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
@@ -111,14 +122,6 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   ? I
   : never;
 
-type T1<T> = {
-  [P in keyof TOriginTypeMap<T>]: RequireOnlyOne<
-    {
-      type?: P;
-      typeProps?: TOriginTypeMap<T>[P];
-    } & IFormItemT,
-    'type' | 'render'
-  >;
-};
+export type IFormItem<T> = TFormItems<T>[keyof TFormItems<T>];
 
-export type IFormItem<T> = T1<T>[keyof T1<T>];
+export type Class<T = any> = new (...args: any[]) => T;

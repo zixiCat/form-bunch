@@ -7,15 +7,21 @@ import React, {
   useRef,
 } from 'react';
 import './index.scss';
-import { IFormItem, IFormRule, IFormSetting, IFormValue } from '../form-bunch';
+import {
+  IFormItem,
+  IFormRule,
+  IFormSetting,
+  IFormValue,
+  Class,
+} from '../form-bunch';
 import { storeCtx } from './index';
 import { computedExtensions } from '..';
 
-const Render = (props: {
+const Render = <T extends unknown>(props: {
   className?: string;
   style?: React.CSSProperties;
   value?: IFormValue;
-  items: IFormItem<any>[];
+  items: IFormItem<T>[];
   setting?: IFormSetting;
   onChange: (form: IFormValue, item: any, key: string) => void;
 }) => {
@@ -43,7 +49,7 @@ const Render = (props: {
   }, [props.value, defaultValue]);
 
   const layoutItem = useCallback(
-    (item: IFormItem<any>, rule?: IFormRule) => ({
+    (item: IFormItem<T>, rule?: IFormRule) => ({
       item: {
         className: `form-bunch-item ${item.className || ''}`.trim(),
         style: {
@@ -101,8 +107,7 @@ const Render = (props: {
       style={props.style}
     >
       {items.map((item) => {
-        // @ts-ignore
-        const Comp = computedExtensions[item.type || ''];
+        const Comp = computedExtensions[item.type || ''] as Class;
         return (
           <div key={item.key} {...layoutItem(item).item}>
             {item.label && (
@@ -128,7 +133,6 @@ const Render = (props: {
                   }}
                 />
               ) : (
-                // @ts-ignore
                 (item.render &&
                   item.render(value[item.key], (state: any) => {
                     const newForm: IFormValue = {
@@ -158,4 +162,4 @@ const Render = (props: {
   );
 };
 
-export default memo(Render);
+export default memo(Render) as typeof Render;
