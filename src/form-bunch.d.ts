@@ -3,11 +3,11 @@ import React from 'react';
 export interface IFormItemT {
   /** class of the formItem */
   className?: string;
-  /** like flex-basic, it's the property of the formItem, default: 100% */
+  /** like flex-basic, the space that formItem takes up, default: 100% */
   col?: string;
-  /** like flex-basic, it's the control's property of the formItem, default: 80% */
+  /** like flex-basic, the space that control of formItem takes up, default: 80% */
   controlCol?: string;
-  /** default value, you can also change `initial value of form API` to set the default value */
+  /** default value, you can also change initial  `value of form API` to set it */
   defaultValue?: any;
   /** the message after failed to verify */
   error?: string;
@@ -17,7 +17,7 @@ export interface IFormItemT {
   label?: string;
   /** type of label alignment, default: right */
   labelAlign?: 'left' | 'right' | 'center';
-  /** like flex-basic, it's the label's property of the formItem, default: 20% */
+  /** like flex-basic, the space that label of formItem takes up, default: 20% */
   labelCol?: string;
   /** the length to offset space from the left, default: 0 */
   offset?: string;
@@ -25,7 +25,7 @@ export interface IFormItemT {
   render?: (value: any, setValue: (state: any) => void) => JSX.Element;
   /** set formItem value to be required, default: false */
   required?: boolean;
-  /** function that to verify the formItem value, it supports regex, when its return is string, the string will replace corresponding error tip */
+  /** function that to verify the formItem value, it supports regex<br />when it return string, the string will replace corresponding error tip */
   verify?: RegExp | ((value?: any, form?: IFormValue) => boolean | string);
 }
 
@@ -42,11 +42,11 @@ type TFormItems<T> = {
 };
 
 export interface IFormSetting {
-  /** like flex-basic, it's the property of the formItem, default: 100% */
+  /** like flex-basic, the space that formItem takes up, default: 100% */
   col?: string;
-  /** like flex-basic, it's the label's property of the formItem, default: 20% */
+  /** like flex-basic, the space that label of formItem takes up, default: 20% */
   labelCol?: string;
-  /** like flex-basic, it's the control's property of the formItem, default: 80% */
+  /** like flex-basic, the space that control of formItem takes up, default: 80% */
   controlCol?: string;
   /** like margin-left, the length to offset space from the left, default: 0 */
   offset?: string;
@@ -95,7 +95,7 @@ type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
 > &
   {
     [K in Keys]-?: Required<Pick<T, K>> &
-      Partial<Record<Exclude<Keys, K>, undefined>>;
+    Partial<Record<Exclude<Keys, K>, undefined>>;
   }[Keys];
 
 export interface IFormValue {
@@ -104,9 +104,9 @@ export interface IFormValue {
 
 type TOriginTypeMap<T> = {
   [p in keyof T]: T[p] extends any[]
-    ? UnionToIntersection<React.ComponentProps<T[p][0]>>
-    : // @ts-ignore
-      React.ComponentProps<T[p]>;
+  ? UnionToIntersection<React.ComponentProps<T[p][0]>>
+  : // @ts-ignore
+  React.ComponentProps<T[p]>;
 };
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
