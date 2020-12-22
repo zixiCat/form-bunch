@@ -45,4 +45,8 @@ const FormBunchCore = <T extends unknown>(
   );
 };
 
-export default forwardRef(FormBunchCore);
+export default forwardRef(FormBunchCore) as <T extends unknown>(
+  props: IFormBunchProps<T> & {
+    ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null;
+  }
+) => JSX.Element;

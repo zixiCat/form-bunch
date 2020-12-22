@@ -11,8 +11,9 @@ export let computedExtensions: unknown = getComputedExtensions(
 export const formBunchInit = <T extends unknown>(
   extensions: T
 ): ((
-  props: IFormBunchProps<T>,
-  ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null
+  props: IFormBunchProps<T> & {
+    ref?: ((instance: unknown) => void) | MutableRefObject<unknown> | null;
+  }
 ) => JSX.Element) => {
   computedExtensions = getComputedExtensions<T>(extensions);
   return FormBunchCore;

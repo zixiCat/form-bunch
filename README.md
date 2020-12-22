@@ -26,24 +26,57 @@ Advantages:
    npm install form-bunch
 ```
 
-### usage
+### usage
 
-```typescript jsx
+First of all, initialize form-bunch, assume that you would like to use components of antd, the components should match these rules
+1. Need two fields `value` and `onChange`
+2. the param(e) of `onChange(e) => void` must be corresponded with `value`.
+if one component has no `value` or `onChange` key, or doesn't match form-bunch, you should replace them like following.
+
+```typescript jsx
+import { DatePicker, Input, Switch } from 'antd';
+
+const extensions = {
+  datePick: DatePicker,
+  input: [
+    Input,
+    {
+      // change the `e.target.value` to `value`
+      // assume the original filed is `onSelect`, 
+      // then it should be "onChange: [`onSelect`, 'e.target.value']"
+      onChange: ['onChange', 'e.target.value'],
+    },
+  ],
+  switch: [
+    Switch,
+    {
+      // change the field `checked` to `value`
+      value: 'checked'
+    }
+  ]
+};
+
+export TExtensions = type extensions
+export const MyFormBunch = formBunchInit<TExtensions>(extensions);
+```
 
 
-<FormBunch 
+```typescript jsx
+<MyFormBunch
 items={
-    
+    
 }
 onChange={(newValue)=>{
-    
+    
 }}
 />
 ```
 
+Click [DEMO](https://github.com/zixiCat/form-bunch) for more details about usage.
+
 ### API
 
-#### Table
+#### Form
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
@@ -91,9 +124,9 @@ onChange={(newValue)=>{
 
 | Property | Description | Type | Default |
 | --- | --- | --- | --- |
-| validate | Number | ()=>boolean | - |
+| validate | Number | ()=> boolean | - |
+| reset | Number | ()=> boolean | - |
 
 ## Bug tracker
 
 If you find a bug, please report it [here on Github](https://github.com/zixiCat/form-bunch/issues)!
-s
