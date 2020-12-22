@@ -78,55 +78,51 @@ Click [DEMO](https://github.com/zixiCat/form-bunch) for more details about�
 
 #### Form
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| className | The className of form-bunch | string | - |
-| items | items of form-bunch | IFormItemT[] | - |
-| setting |  |  |  |
-| value | form data | 1000 | - |
-| onChange | callback after form data changes | (form: IFormValue, item?: any, key?: string | string[]) => void | - |
-| onKeyPress | The callback function that is triggered when some keys of KB is pressed | (e: React.KeyboardEvent<HTMLInputElement>) => void | - |
+| Property | Description                                                 | Type                                               | Default |
+| -------- | ----------------------------------------------------------- | -------------------------------------------------- | ------- |
+| items    | config of each form item， see `Items API` for more details | IFormItem<T>                                       | -       |
+| onChange | the callback function when form data changes                | (form: IFormValue, item: any, key: string) => void | -       |
+| value    | form data                                                   | IFormValue                                         | -       |
 
 #### Items
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| labelAlign | type of label alignment, default is right | "left", "right", "center" | "left" |
-| className | default value, you can also change `initial value of form API` to set the default value | any | - |
-| defaultValue |  |  |  |
-| col | like flex-basic, it's the property of the formItem, default is 100% | string | 100% |
-| label | formItem label name | string | - |
-| key | formItem property | string | - |
-| type | render type of formItem control, require that one and only one is provided between property [type] and [render] | TTypeMap | - |
-| labelCol | like flex-basic, it's the label's property of the formItem | string | "20%" |
-| controlCol | like flex-basic, it's the control's property of the formItem | string | 80% |
-| error | the message after fail to verify | string | - |
-| trigger | the way that trigger to verify | "blur", "change" | - |
-| required | set formItem value to required | boolean | false |
-| verify | function that verify the formItem value, support regex, when the return function is string, the error is | RegExp, ((value?: any, form?: IFormValue) => boolean | string) | - |
-| render | render type of formItem control, require that one and only one is provided between property [type] and [render] | (value: any, setValue: (state: any) => void) => React.ReactNode | - |
-| typeProps | when use [type], then [typeProps] is its original props | React.ComponentProps<typeof typeMap[keyof typeof typeMap]> | - |
+| Property     | Description                                                               | Type                                                              | Default |
+| ------------ | ------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------- |
+| className    | class of the formItem                                                     | string                                                            | -       |
+| col          | like flex-basic, it's the property of the formItem                        | number \| string                                                  | '100%'  |
+| controlCol   | like flex-basic, it's the control's property of the formItem              | number \| string                                                  | '80%'   |
+| defaultValue | default value, you can also change initial  `value of form API` to set it | any                                                               | -       |
+| error        | the message after failed to verify                                        | string                                                            | -       |
+| key          | formItem property                                                         | string                                                            | -       |
+| label        | formItem label name                                                       | string                                                            | -       |
+| labelAlign   | type of label alignment                                                   | 'left' \| 'right' \| 'center'                                     | 'right' |
+| labelCol     | like flex-basic, it's the label's property of the formItem                | number \| string                                                  | 20%     |
+| offset       | like margin-left, the length to offset space from the left                | number \| string                                                  | 0       |
+| render       | render type property [type] and [render]                                  | (value: any, setValue: (state: any) => void) => JSX.Element       | -       |
+| required     | set formItem value to be required                                         | boolean                                                           | false   |
+| type         | render type only one is provided between property [type] and [render]     | string                                                            | -       |
+| typeProps    | when use [type], then [typeProps] is its original props                   | object                                                            | -       |
+| verify       | function th replace corresponding error tip                               | RegExp \| ((value?: any, form?: IFormValue) => boolean \| string) | -       |
 
 #### Setting
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| value |  |  |  |
-| items |  |  |  |
-| labelAlign | type of label alignment | "left" , "right" , "center" | 'left' |
-| hasTip |  |  |  |
-| offset |  |  |  |
-| labelCol | like flex-basic, it's the label's property of the formItem | string | "20%" |
-| controlCol | like flex-basic, it's the control's property of the formItem | string | 80% |
-| col | like flex-basic, it's the property of the formItem, default is 100% | string | 100% |
+| Property   | Description                                                  | Type                          | Default |
+| ---------- | ------------------------------------------------------------ | ----------------------------- | ------- |
+| col        | like flex-basic, it's the property of the formItem           | number \| string              | '100%   |
+| controlCol | like flex-basic, it's the control's property of the formItem | number \| string              | '80%'   |
+| hasTips    | determine if there is space left for error tips              | boolean                       | false   |
+| labelAlign | type of label alignment                                      | "left" \| "right" \| "center" | 'right' |
+| labelCol   | like flex-basic, it's the label's property of the formItem   | number \| string              | '20%'   |
+| offset     | like margin-left, the length to offset space from the left   | number \| string              | 0       |
 
 #### Ref
 
-| Property | Description | Type | Default |
-| --- | --- | --- | --- |
-| validate | Number | ()=> boolean | - |
-| reset | Number | ()=> boolean | - |
+| Property | Description                                   | Type          | Default |
+| -------- | --------------------------------------------- | ------------- | ------- |
+| validate | validate all values of form and return result | () => boolean | -       |
+| reset    | reset all value of form and result of verify  | () => void    | -       |
 
 ## Bug tracker
+
 
 If you find a bug, please report it [here on Github](https://github.com/zixiCat/form-bunch/issues)!

@@ -1,34 +1,32 @@
 import React from 'react';
 
 export interface IFormItemT {
-  /** type of label alignment, default: right */
-  labelAlign?: 'left' | 'right' | 'center';
   /** class of the formItem */
   className?: string;
-  /** default value, you can also change `initial value of form API` to set the default value */
-  defaultValue?: any;
   /** like flex-basic, it's the property of the formItem, default: 100% */
   col?: string;
-  /** the length to offset space from the left, default: 0 */
-  offset?: string;
-  /** formItem label name */
-  label?: string;
-  /** formItem property */
-  key: string;
-  /** like flex-basic, it's the label's property of the formItem, default: 20% */
-  labelCol?: string;
   /** like flex-basic, it's the control's property of the formItem, default: 80% */
   controlCol?: string;
+  /** default value, you can also change `initial value of form API` to set the default value */
+  defaultValue?: any;
   /** the message after failed to verify */
   error?: string;
-  /** the way that trigger to verify, default: 'change' */
-  trigger?: TTrigger;
+  /** formItem property */
+  key: string;
+  /** formItem label name */
+  label?: string;
+  /** type of label alignment, default: right */
+  labelAlign?: 'left' | 'right' | 'center';
+  /** like flex-basic, it's the label's property of the formItem, default: 20% */
+  labelCol?: string;
+  /** the length to offset space from the left, default: 0 */
+  offset?: string;
+  /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
+  render?: (value: any, setValue: (state: any) => void) => JSX.Element;
   /** set formItem value to be required, default: false */
   required?: boolean;
   /** function that to verify the formItem value, it supports regex, when its return is string, the string will replace corresponding error tip */
   verify?: RegExp | ((value?: any, form?: IFormValue) => boolean | string);
-  /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
-  render?: (value: any, setValue: (state: any) => void) => JSX.Element;
 }
 
 type TFormItems<T> = {
@@ -50,7 +48,7 @@ export interface IFormSetting {
   labelCol?: string;
   /** like flex-basic, it's the control's property of the formItem, default: 80% */
   controlCol?: string;
-  /** the length to offset space from the left, default: 0 */
+  /** like margin-left, the length to offset space from the left, default: 0 */
   offset?: string;
   /** determine if there is space left for error tips */
   hasTips?: boolean;
@@ -68,16 +66,12 @@ export interface IFormBunchRef {
 export interface IFormBunchProps<T> {
   /** config of each form item */
   items: IFormItem<T>[];
-  /** global setting of form, Priority: items > setting */
-  setting?: IFormSetting;
   /** the callback function when form data changes */
   onChange?: (form: IFormValue, item: any, key: string) => void;
-  /** the callback function that is triggered when some keys of keyboard is pressed */
-  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  /** global setting of form, Priority: items > setting */
+  setting?: IFormSetting;
   /** form data */
   value?: IFormValue;
-  className?: string;
-  style?: React.CSSProperties;
 }
 
 export interface IFormRuleItem {
