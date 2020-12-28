@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.0.2](https://github.com/zixiCat/form-bunch/compare/v1.0.0...v1.0.2) (2020-12-28)
+
+
+### Bug Fixes
+
+* adjust the style of code modify url of the types in README.md ([56f5083](https://github.com/zixiCat/form-bunch/commit/56f508352df68d37f678079df0cbe66e3d9a97b5))
+
 ## 1.0.0 (2020-12-28)
 
 
