@@ -2,7 +2,7 @@
 [![NPM Status](https://img.shields.io/npm/v/form-bunch.svg)](https://www.npmjs.com/package/form-bunch)  
 
 Form-bunch is a component like plugin that make it easier to write form. <br />
-You could add the most of components what you want to form-bunch for build various forms. <br />
+You could add the most of components what you want to form-bunch for build various form. <br />
 You could also easily change the settings to get the verification or layout you want. <br />
 Hope you enjoy it, and if you like it, star it pllllllllllz. :)<br />
 
@@ -36,7 +36,7 @@ Assume that you would like to use components of [antd](https://ant.desi
 2. the param(e) of `onChange(e) => void` must be corresponding to `value`. <br/>
 if one component has no `value` or `onChange` key, or it doesn't match form-bunch, you should replace them like following. 
 
-```typescript jsx
+```typescript
 // index.tsx 
 import { DatePicker, Input, Switch } from 'antd';
 
@@ -94,7 +94,7 @@ export default MyFormBunch;
 ```
 
 Finally, config form-bunch, and there are many [apis](#api) for usage.
-```typescript jsx
+```typescript
 <MyFormBunch
   ref={formBunchRef}
   value={value}
@@ -126,10 +126,10 @@ Click [DEMO](https://codesandbox.io/s/form-bunch-9084x) for more details ab
 
 | Property | Description                                                                                      | Type                                                                                                                        | Default |
 | -------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ------- |
-| items    | config of each form item， see [Items API](#items) for more details                              | [IFormItem<T>](https://github.com/zixiCat/form-bunch/blob/master/src/form-bunch.d.ts)                                       | -       |
-| onChange | the callback function when form data changes                                                     | (form: [IFormValue](https://github.com/zixiCat/form-bunch/blob/master/src/form-bunch.d.ts), item: any, key: string) => void | -       |
-| setting  | global setting of form, Priority: items > setting， see [Setting API](#setting) for more details | [IFormSetting](https://github.com/zixiCat/form-bunch/blob/master/src/form-bunch.d.ts)                                       | -       |
-| value    | form data                                                                                        | [IFormValue](https://github.com/zixiCat/form-bunch/blob/master/src/form-bunch.d.ts)                                         | -       |
+| items    | config of each form item， see [Items API](#items) for more details                              | [IFormItem<T>](https://github.com/zixiCat/form-bunch/blob/master/src/types.ts)                                       | -       |
+| onChange | the callback function when form data changes                                                     | (form: [IFormValue](https://github.com/zixiCat/form-bunch/blob/master/src/types.ts), item: any, key: string) => void | -       |
+| setting  | global setting of form, Priority: items > setting， see [Setting API](#setting) for more details | [IFormSetting](https://github.com/zixiCat/form-bunch/blob/master/src/types.ts)                                       | -       |
+| value    | form data                                                                                        | [IFormValue](https://github.com/zixiCat/form-bunch/blob/master/src/types.ts)                                         | -       |
 
 
 ####  Items
@@ -150,7 +150,7 @@ Click [DEMO](https://codesandbox.io/s/form-bunch-9084x) for more details ab
 | required     | set formItem value to be required                                                                                                          | boolean                                                           | false   |
 | type         | render type of formItem control, <br/>require that only one is provided between property [type] and [render]                               | string                                                            | -       |
 | typeProps    | when use [type], then [typeProps] is its original props                                                                                    | object                                                            | -       |
-| verify       | function that to verify the formItem value, it supports regex.<br />when it return string, the string will replace corresponding error tip | RegExp \| ((value?: any, form?: [IFormValue](https://github.com/zixiCat/form-bunch/blob/master/src/form-bunch.d.ts)) => boolean \| string) | -       |
+| verify       | function that to verify the formItem value, it supports regex.<br />when it return string, the string will replace corresponding error tip | RegExp \| ((value?: any, form?: [IFormValue](https://github.com/zixiCat/form-bunch/blob/master/src/types.ts)) => boolean \| string) | -       |
 
 ####  Setting
 
