@@ -1,4 +1,4 @@
-import { IFormRule, IFormValue } from '../form-bunch';
+import { IFormRule, IFormValue } from '../types';
 import { validate } from './verify';
 
 class Store {

@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useRef,
 } from 'react';
-import { IFormBunchProps, IFormBunchRef } from '../form-bunch';
+import { IFormBunchProps, IFormBunchRef } from '../types';
 import Render from './render';
 import Verify from './verify';
 // See https://github.com/zixiCat/easy-create-react-context for more details about `easy-create-react-context`

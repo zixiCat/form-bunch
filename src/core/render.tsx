@@ -13,7 +13,7 @@ import {
   IFormSetting,
   IFormValue,
   Class,
-} from '../form-bunch';
+} from '../types';
 import { storeCtx } from './index';
 import { computedExtensions } from '..';
 

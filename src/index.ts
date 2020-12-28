@@ -1,5 +1,5 @@
 import { MutableRefObject } from 'react';
-import { IFormBunchProps } from './form-bunch';
+import { IFormBunchProps } from './types';
 import FormBunchCore from './core/index';
 import getComputedExtensions from './extensions/getComputedExtensions';
 import defaultExtensions from './extensions/defaultExtensions';
