@@ -1,0 +1,24 @@
+name: npm-publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install
+      # Publish to npm
+      - run:
+          git clone https://zixiCat:${{ secrets.REPO_FORM_BUNCH }}@github.com/zixiCat/scripts.git ./zixicat;
+          node ./zixicat/rollup-publish;
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
