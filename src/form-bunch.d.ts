@@ -9,17 +9,17 @@ export interface IFormItemT {
   controlCol?: string;
   /** default value, you can also change initial  `value of form API` to set it */
   defaultValue?: any;
-  /** the message after failed to verify */
+  /** the message after verification fails */
   error?: string;
-  /** formItem property */
+  /** property of formItem */
   key: string;
-  /** formItem label name */
-  label?: string;
+  /** label of formItem */
+  label?: string | JSX.Element;
   /** type of label alignment, default: right */
   labelAlign?: 'left' | 'right' | 'center';
   /** like flex-basic, the space that label of formItem takes up, default: 20% */
   labelCol?: string;
-  /** the length to offset space from the left, default: 0 */
+  /** like margin-left, the space offset from the left, default: 0 */
   offset?: string;
   /** render type of formItem control, require that one and only one is provided between property [type] and [render] */
   render?: (value: any, setValue: (state: any) => void) => JSX.Element;
@@ -48,7 +48,7 @@ export interface IFormSetting {
   labelCol?: string;
   /** like flex-basic, the space that control of formItem takes up, default: 80% */
   controlCol?: string;
-  /** like margin-left, the length to offset space from the left, default: 0 */
+  /** like margin-left, the space offset from the left, default: 0 */
   offset?: string;
   /** determine if there is space left for error tips */
   hasTips?: boolean;
@@ -95,7 +95,7 @@ type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
 > &
   {
     [K in Keys]-?: Required<Pick<T, K>> &
-    Partial<Record<Exclude<Keys, K>, undefined>>;
+      Partial<Record<Exclude<Keys, K>, undefined>>;
   }[Keys];
 
 export interface IFormValue {
@@ -104,9 +104,9 @@ export interface IFormValue {
 
 type TOriginTypeMap<T> = {
   [p in keyof T]: T[p] extends any[]
-  ? UnionToIntersection<React.ComponentProps<T[p][0]>>
-  : // @ts-ignore
-  React.ComponentProps<T[p]>;
+    ? UnionToIntersection<React.ComponentProps<T[p][0]>>
+    : // @ts-ignore
+      React.ComponentProps<T[p]>;
 };
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
