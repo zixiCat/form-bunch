@@ -1,7 +1,7 @@
 # form-bunch
 [![NPM Status](https://img.shields.io/npm/v/form-bunch.svg)](https://www.npmjs.com/package/form-bunch)  
 
-The form-bunch is a component like a plugin that make it easier to write form. <br />
+Form-bunch is a component like plugin that make it easier to write form. <br />
 You could add the most of components what you want to form-bunch for build various forms. <br />
 You could also easily change the settings to get the verification or layout you want. <br />
 Hope you enjoy it, and if you like it, star it pllllllllllz. :)<br />

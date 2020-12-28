@@ -1,6 +1,8 @@
 {
   "name": "form-bunch",
   "version": "0.1.0",
+  "homepage": "https://github.com/zixiCat/form-bunch",
+  "description": "Form-bunch is a component like plugin that make it easier to write form, you could add the most of components what you want to form-bunch for build various forms.",
   "dependencies": {
     "@types/react": "^17.0.0",
     "react": "^17.0.1",
@@ -20,5 +22,21 @@
     "rollup": "^2.34.1",
     "rollup-plugin-sass": "^1.2.2",
     "rollup-plugin-typescript2": "^0.29.0"
+  },
+  "main": "src/index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "form",
+    "react",
+    "verify",
+    "layout"
+  ],
+  "license": "MIT",
+  "author": "zixicat",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zixiCat/form-bunch"
   }
 }
