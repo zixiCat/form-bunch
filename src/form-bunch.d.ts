@@ -72,12 +72,13 @@ export interface IFormBunchProps<T> {
   setting?: IFormSetting;
   /** form data */
   value?: IFormValue;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export interface IFormRuleItem {
   value?: string;
   error: string;
-  trigger?: TTrigger;
   verify?: RegExp | ((value?: unknown, form?: IFormValue) => void);
   result?: boolean | 'unverified';
   required: boolean;
@@ -86,8 +87,6 @@ export interface IFormRuleItem {
 export interface IFormRule {
   [x: string]: IFormRuleItem;
 }
-
-type TTrigger = 'blur' | 'change';
 
 type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
   T,

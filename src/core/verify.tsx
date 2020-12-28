@@ -34,7 +34,6 @@ export const initRuleFn = <T extends unknown>(
     temp[i.key] = {
       value: defaultValue[i.key] || null,
       error: i.error || '',
-      trigger: i.trigger,
       verify: i?.verify,
       result: 'unverified',
       required: !!i?.required,
