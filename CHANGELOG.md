@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.0.3](https://github.com/zixiCat/form-bunch/compare/v1.0.2...v1.0.3) (2020-12-29)
+
+
+### Bug Fixes
+
+* fix that it can not be set value by async function ([4ffb9e1](https://github.com/zixiCat/form-bunch/commit/4ffb9e13682f01a4d3c5ddb52bf871da9993cbd1))
+
 ### [1.0.2](https://github.com/zixiCat/form-bunch/compare/v1.0.0...v1.0.2) (2020-12-28)
 
 
