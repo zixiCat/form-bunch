@@ -41,7 +41,10 @@ const Render = <T extends unknown>(props: {
   }, [props.items]);
 
   useEffect(() => {
-    if (!mounted.current) {
+    if (mounted.current) {
+      // do componentDidUpdate logic
+      storeCtx.dispatch('setValue', props.value || {});
+    } else {
       // do componentDidMount logic
       storeCtx.dispatch('setDefaultValue', { ...props.value, ...defaultValue });
       mounted.current = true;
