@@ -54,7 +54,7 @@ export const verifyFnMap = {
     }
   },
   'true-false': (_rule: IFormRuleItem, valueItem: any) => {
-    return !!valueItem;
+    return valueItem !== undefined || valueItem !== null;
   },
   'true-true': (rule: IFormRuleItem, valueItem: any, value: IFormValue) => {
     if (valueItem) {
