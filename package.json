@@ -1,15 +1,15 @@
 {
   "name": "form-bunch",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/zixiCat/form-bunch",
   "description": "Form-bunch is a component like plugin that make it easier to write form, you could add the most of components what you want to form-bunch for build various forms",
   "dependencies": {
-    "@types/react": "^17.0.0",
     "react": "^17.0.1",
     "easy-create-react-context": "^1.0.1",
     "typescript": "^4.1.2"
   },
   "devDependencies": {
+    "@types/react": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
     "eslint": "^7.15.0",

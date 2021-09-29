@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.0.4](https://github.com/zixiCat/form-bunch/compare/v1.0.3...v1.0.4) (2021-09-29)
+
+
+### Bug Fixes
+
+* fix the rule of verification ([9d485ab](https://github.com/zixiCat/form-bunch/commit/9d485abd91e76799c71cbbb88ef4c141e2be3f83))
+
 ### [1.0.3](https://github.com/zixiCat/form-bunch/compare/v1.0.2...v1.0.3) (2020-12-29)
 
 
