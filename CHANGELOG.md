@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0](https://github.com/zixiCat/form-bunch/compare/v1.0.4...v2.0.0) (2022-06-14)
+
+
+### Features
+
+* use zustand instead of easy-create-react-context ([5ba13d7](https://github.com/zixiCat/form-bunch/commit/5ba13d7c52995dc6bcd3e9602dc869eac744133a))
+
 ### [1.0.4](https://github.com/zixiCat/form-bunch/compare/v1.0.3...v1.0.4) (2021-09-29)
 
 
