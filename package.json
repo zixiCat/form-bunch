@@ -1,6 +1,6 @@
 {
   "name": "form-bunch",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "homepage": "https://github.com/zixiCat/form-bunch",
   "description": "Form-bunch is a component like plugin that make it easier to write form, you could add the most of components what you want to form-bunch for build various forms",
   "dependencies": {
