@@ -14,11 +14,11 @@
 
 # setting
 /.idea
-/.versionrc.js
 
 # lock
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
 # misc
 .DS_Store
