@@ -7,12 +7,7 @@ import React, {
 import { IFormBunchProps, IFormBunchRef } from '../types';
 import Render from './render';
 import Verify from './verify';
-// See https://github.com/zixiCat/easy-create-react-context for more details about `easy-create-react-context`
-// If you like it, star it :)
-import { getConTexts, Provider } from 'easy-create-react-context';
-import Store, { IStore } from './store';
-
-export const storeCtx = getConTexts<IStore>();
+import store, { Provider } from './store';
 
 const FormBunchCore = <T extends unknown>(
   props: IFormBunchProps<T>,
@@ -29,7 +24,7 @@ const FormBunchCore = <T extends unknown>(
   );
 
   return (
-    <Provider<IStore> contexts={storeCtx} value={new Store()}>
+    <Provider createStore={store}>
       <Render<T>
         className={props.className}
         style={props.style}

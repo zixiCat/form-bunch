@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import './index.scss';
 import {
   IFormItem,
@@ -14,7 +7,7 @@ import {
   IFormValue,
   Class,
 } from '../types';
-import { storeCtx } from './index';
+import { useStore } from './store';
 import { computedExtensions } from '..';
 
 const Render = <T extends unknown>(props: {
@@ -25,8 +18,10 @@ const Render = <T extends unknown>(props: {
   setting?: IFormSetting;
   onChange: (form: IFormValue, item: any, key: string) => void;
 }) => {
-  const value = useContext(storeCtx.getContext('value'));
-  const rule = useContext(storeCtx.getContext('rule'));
+  const value = useStore((s) => s.value);
+  const rule = useStore((s) => s.rule);
+  const setValue = useStore((s) => s.setValue);
+  const setDefaultValue = useStore((s) => s.setDefaultValue);
   const mounted = useRef<boolean>();
   const setting = useMemo(() => props.setting, [props.setting]);
   const items = useMemo(() => props.items, [props.items]);
@@ -43,10 +38,10 @@ const Render = <T extends unknown>(props: {
   useEffect(() => {
     if (mounted.current) {
       // do componentDidUpdate logic
-      storeCtx.dispatch('setValue', props.value || {});
+      setValue(props.value || {});
     } else {
       // do componentDidMount logic
-      storeCtx.dispatch('setDefaultValue', { ...props.value, ...defaultValue });
+      setDefaultValue({ ...props.value, ...defaultValue });
       mounted.current = true;
     }
   }, [props.value, defaultValue]);
@@ -132,7 +127,7 @@ const Render = <T extends unknown>(props: {
                       [item.key]: e,
                     };
                     props.onChange(newForm, newForm[item.key], item.key);
-                    storeCtx.dispatch('setValue', newForm);
+                    setValue(newForm);
                   }}
                 />
               ) : (
@@ -143,7 +138,7 @@ const Render = <T extends unknown>(props: {
                       [item.key]: state,
                     };
                     props.onChange(newForm, newForm[item.key], item.key);
-                    storeCtx.dispatch('setValue', newForm);
+                    setValue(newForm);
                   })) ||
                 ''
               )}

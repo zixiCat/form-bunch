@@ -4,7 +4,11 @@
     "outDir": "lib",
     "module": "esnext",
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "sourceMap": true,
     "allowJs": true,
     "esModuleInterop": true,
@@ -16,15 +20,21 @@
     "resolveJsonModule": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "strict":false,
+    "strict": false,
     "isolatedModules": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "example", "rollup.config.js"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "example",
+    "rollup.config.js"
+  ]
 }
-
-
-

@@ -1,7 +1,6 @@
 import React, {
   forwardRef,
   useCallback,
-  useContext,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -17,7 +16,8 @@ import {
   IFormRuleItem,
   IFormValue,
 } from '../types';
-import { storeCtx } from './index';
+import { useStore } from './store';
+import { hasValue } from './util';
 
 /**
  * Function to get the initial rule
@@ -50,18 +50,18 @@ export const verifyFnMap = {
     if (rule?.verify instanceof RegExp) {
       return (rule?.verify as RegExp).test(valueItem) || false;
     } else {
-      return (rule?.verify as Function)(valueItem ?? '', value) || false;
+      return (rule?.verify as Function)(valueItem, value) || false;
     }
   },
   'true-false': (_rule: IFormRuleItem, valueItem: any) => {
-    return valueItem !== undefined || valueItem !== null;
+    return hasValue(valueItem);
   },
   'true-true': (rule: IFormRuleItem, valueItem: any, value: IFormValue) => {
-    if (valueItem) {
+    if (hasValue(valueItem)) {
       if (rule?.verify instanceof RegExp) {
         return (rule?.verify as RegExp).test(valueItem) || false;
       } else {
-        return (rule?.verify as Function)(valueItem ?? '', value) || false;
+        return (rule?.verify as Function)(valueItem, value) || false;
       }
     } else {
       if (typeof rule?.verify === 'function') {
@@ -113,8 +113,12 @@ const Verify = <T extends unknown>(
 ) => {
   let [timeout] = useState<any>(null);
   const mounted = useRef<boolean>();
-  const value = useContext(storeCtx.getContext('value'));
-  const defaultValue = useContext(storeCtx.getContext('defaultValue'));
+  const value = useStore((s) => s.value);
+  const defaultValue = useStore((s) => s.defaultValue);
+  const setInitRule = useStore((s) => s.setInitRule);
+  const verify = useStore((s) => s.verify);
+  const verifyAll = useStore((s) => s.verifyAll);
+  const reset = useStore((s) => s.reset);
 
   const initError = useMemo(() => {
     const temp: { [x: string]: string } = {};
@@ -124,13 +128,13 @@ const Verify = <T extends unknown>(
     return temp;
   }, [props.items]);
 
-  const initRule = useMemo(() => initRuleFn(props.items, defaultValue), [
-    defaultValue,
-    props.items,
-  ]);
+  const initRule = useMemo(
+    () => initRuleFn(props.items, defaultValue),
+    [defaultValue, props.items]
+  );
 
   useEffect(() => {
-    storeCtx.dispatch('setInitRule', initRule);
+    setInitRule(initRule);
   }, [initRule]);
 
   const debounce = useCallback((fn: Function, interval = 200) => {
@@ -150,13 +154,13 @@ const Verify = <T extends unknown>(
     ref,
     (): IFormBunchRef => ({
       validate: () => {
-        return storeCtx.dispatch('verifyAll', {
+        return verifyAll({
           value: value || {},
           initError: initError,
         });
       },
       reset: () => {
-        storeCtx.dispatch('reset');
+        reset();
       },
     })
   );
@@ -165,7 +169,7 @@ const Verify = <T extends unknown>(
     if (mounted.current) {
       // do componentDidUpdate logic
       debounce(() => {
-        storeCtx.dispatch('verify', {
+        verify({
           value,
           initError,
         });
